@@ -93,8 +93,8 @@ void handleOpen() {
 
 void handleStatus() {
   String json = "{";
-  json += "\"relay\":1,\"open\":";
-  json += doorOpen ? "true" : "false";
+  json += "\"ok\":true,\"role\":\"cinema-door\",\"uptimeMs\":";
+  json += String(millis());
   json += "}";
   sendJson(200, json);
 }

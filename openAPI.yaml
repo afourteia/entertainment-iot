@@ -26,29 +26,48 @@ paths:
     get:
       tags:
         - Billiard Parent
-      summary: Get billiard relay desired states
-      description: Returns desired state for relays 1-16. Child relay states are desired states, not confirmed hardware states.
+        - Cinema Door
+      summary: Get device status
+      description: >
+        On the billiard parent, returns desired state for relays 1-16. Child relay states
+        are desired states, not confirmed hardware states. On the cinema door, returns a
+        simple heartbeat response.
       servers:
         - url: http://{parentIp}
           variables:
             parentIp:
               default: 192.168.1.100
+        - url: http://{cinemaDoorIp}
+          variables:
+            cinemaDoorIp:
+              default: 192.168.1.101
       responses:
         "200":
-          description: Current desired relay states and child presence.
+          description: Device status response. Shape depends on which device serves the endpoint.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BilliardStatus"
-              example:
-                relays:
-                  - channel: 1
-                    desired: false
-                  - channel: 9
-                    desired: true
-                childOnline: true
-                lastChildSeenMs: 123456
-                missedPresenceCount: 0
+                oneOf:
+                  - $ref: "#/components/schemas/BilliardStatus"
+                  - $ref: "#/components/schemas/CinemaDoorHeartbeat"
+              examples:
+                billiardParent:
+                  summary: Billiard parent status
+                  value:
+                    relays:
+                      - channel: 1
+                        desired: false
+                      - channel: 9
+                        desired: true
+                    childOnline: true
+                    lastChildSeenMs: 123456
+                    missedPresenceCount: 0
+                cinemaDoor:
+                  summary: Cinema door heartbeat
+                  value:
+                    ok: true
+                    role: cinema-door
+                    uptimeMs: 123456
   /relay:
     get:
       tags:
@@ -222,6 +241,24 @@ components:
           type: integer
           minimum: 1
           maximum: 120
+    CinemaDoorHeartbeat:
+      type: object
+      required:
+        - ok
+        - role
+        - uptimeMs
+      properties:
+        ok:
+          type: boolean
+          enum:
+            - true
+        role:
+          type: string
+          enum:
+            - cinema-door
+        uptimeMs:
+          type: integer
+          minimum: 0
     Error:
       type: object
       required:
