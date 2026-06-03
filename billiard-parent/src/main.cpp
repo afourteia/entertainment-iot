@@ -399,9 +399,14 @@ void handleRelayCommand() {
 void handleNotFound() { sendError(404, "Not found"); }
 
 void connectWiFi() {
+  WiFi.disconnect(true, true);
+  delay(100);
   WiFi.mode(WIFI_STA);
   WiFi.setSleep(false);
-  WiFi.setHostname(WIFI_HOSTNAME);
+
+  if (!WiFi.setHostname(WIFI_HOSTNAME)) {
+    printf("Failed to set WiFi hostname to \"%s\"\r\n", WIFI_HOSTNAME);
+  }
 
   if (String(WIFI_PASSWORD).length() == 0) {
     WiFi.begin(WIFI_SSID);
@@ -415,6 +420,7 @@ void connectWiFi() {
     printf(".");
   }
   printf("\r\nWiFi connected: %s\r\n", WiFi.localIP().toString().c_str());
+  printf("WiFi hostname: %s\r\n", WiFi.getHostname());
 }
 
 void configureHttpServer() {
