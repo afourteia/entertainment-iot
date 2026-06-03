@@ -1,5 +1,6 @@
 {
   "folders": [
+    { "name": "entertainment-iot", "path": "." },
     { "name": "billiard-parent", "path": "billiard-parent" },
     { "name": "billiard-child", "path": "billiard-child" },
     { "name": "cinema-door", "path": "cinema-door" }
