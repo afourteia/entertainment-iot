@@ -1,0 +1,231 @@
+openapi: 3.0.3
+info:
+  title: Entertainment IoT Relay API
+  version: 1.0.0
+  description: HTTP APIs exposed by the billiard parent and cinema door ESP32 relay devices.
+servers:
+  - url: http://{parentIp}
+    description: Billiard parent device
+    variables:
+      parentIp:
+        default: 192.168.1.100
+        description: IP address assigned to the billiard parent device.
+  - url: http://{cinemaDoorIp}
+    description: Cinema door device
+    variables:
+      cinemaDoorIp:
+        default: 192.168.1.101
+        description: IP address assigned to the cinema door device.
+tags:
+  - name: Billiard Parent
+    description: Relay status and control for billiard parent and child relays.
+  - name: Cinema Door
+    description: Timed door relay activation.
+paths:
+  /status:
+    get:
+      tags:
+        - Billiard Parent
+      summary: Get billiard relay desired states
+      description: Returns desired state for relays 1-16. Child relay states are desired states, not confirmed hardware states.
+      servers:
+        - url: http://{parentIp}
+          variables:
+            parentIp:
+              default: 192.168.1.100
+      responses:
+        "200":
+          description: Current desired relay states and child presence.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BilliardStatus"
+              example:
+                relays:
+                  - channel: 1
+                    desired: false
+                  - channel: 9
+                    desired: true
+                childOnline: true
+                lastChildSeenMs: 123456
+                missedPresenceCount: 0
+  /relay:
+    get:
+      tags:
+        - Billiard Parent
+      summary: Set one or more billiard relay desired states
+      description: >
+        Supports either `channel` or `channels` with a shared `state`, or separate `on`
+        and `off` channel lists. Channels 1-8 are parent relays and 9-16 are child relays.
+      servers:
+        - url: http://{parentIp}
+          variables:
+            parentIp:
+              default: 192.168.1.100
+      parameters:
+        - name: channel
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 16
+          example: 9
+          description: Single relay channel to set with `state`.
+        - name: channels
+          in: query
+          required: false
+          schema:
+            type: string
+            pattern: "^[0-9]+(,[0-9]+)*$"
+          example: 1,2,5,8
+          description: Comma-separated relay channels to set with `state`.
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - "on"
+              - "1"
+              - "true"
+              - open
+              - "off"
+              - "0"
+              - "false"
+              - close
+              - closed
+          example: "on"
+          description: Desired state used with `channel` or `channels`.
+        - name: "on"
+          in: query
+          required: false
+          schema:
+            type: string
+            pattern: "^[0-9]+(,[0-9]+)*$"
+          example: 1,2,5,8
+          description: Comma-separated relay channels to turn on.
+        - name: "off"
+          in: query
+          required: false
+          schema:
+            type: string
+            pattern: "^[0-9]+(,[0-9]+)*$"
+          example: 3,4
+          description: Comma-separated relay channels to turn off.
+      responses:
+        "200":
+          description: Updated desired relay states and child presence.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BilliardStatus"
+        "400":
+          description: Invalid channel, state, empty list, or conflicting duplicate command.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: Invalid state
+  /open:
+    get:
+      tags:
+        - Cinema Door
+      summary: Open the cinema door relay for a timed duration
+      servers:
+        - url: http://{cinemaDoorIp}
+          variables:
+            cinemaDoorIp:
+              default: 192.168.1.101
+      parameters:
+        - name: seconds
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 120
+            default: 10
+          example: 10
+          description: Number of seconds to keep relay channel 1 energized.
+      responses:
+        "200":
+          description: Door relay opened.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CinemaDoorOpen"
+              example:
+                relay: 1
+                open: true
+                seconds: 10
+        "400":
+          description: Invalid duration.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+              example:
+                error: seconds must be between 1 and 120
+components:
+  schemas:
+    RelayDesiredState:
+      type: object
+      required:
+        - channel
+        - desired
+      properties:
+        channel:
+          type: integer
+          minimum: 1
+          maximum: 16
+        desired:
+          type: boolean
+    BilliardStatus:
+      type: object
+      required:
+        - relays
+        - childOnline
+        - lastChildSeenMs
+        - missedPresenceCount
+      properties:
+        relays:
+          type: array
+          minItems: 16
+          maxItems: 16
+          items:
+            $ref: "#/components/schemas/RelayDesiredState"
+        childOnline:
+          type: boolean
+        lastChildSeenMs:
+          type: integer
+          minimum: 0
+          description: Parent `millis()` value when the child last answered a presence ping.
+        missedPresenceCount:
+          type: integer
+          minimum: 0
+    CinemaDoorOpen:
+      type: object
+      required:
+        - relay
+        - open
+        - seconds
+      properties:
+        relay:
+          type: integer
+          enum:
+            - 1
+        open:
+          type: boolean
+        seconds:
+          type: integer
+          minimum: 1
+          maximum: 120
+    Error:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: string
