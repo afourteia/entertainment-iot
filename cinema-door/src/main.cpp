@@ -1,10 +1,10 @@
 #include <Arduino.h>
 
-#include "ESP32-S3-POE-ETH-8DI-8RO-Demo/Arduino/examples/MAIN_WIFI_AP/I2C_Driver.h"
-#include "ESP32-S3-POE-ETH-8DI-8RO-Demo/Arduino/examples/MAIN_WIFI_AP/WS_GPIO.h"
-#include "ESP32-S3-POE-ETH-8DI-8RO-Demo/Arduino/examples/MAIN_WIFI_AP/WS_RTC.h"
-#include "ESP32-S3-POE-ETH-8DI-8RO-Demo/Arduino/examples/MAIN_WIFI_AP/WS_Relay.h"
-#include "ESP32-S3-POE-ETH-8DI-8RO-Demo/Arduino/examples/MAIN_WIFI_AP/WS_WIFI.h"
+#include "I2C_Driver.h"
+#include "WS_GPIO.h"
+#include "WS_RTC.h"
+#include "WS_Relay.h"
+#include "WS_WIFI.h"
 
 void setup() {
   GPIO_Init();
