@@ -14,6 +14,10 @@
 #define WIFI_PASSWORD ""
 #endif
 
+#ifndef WIFI_HOSTNAME
+#define WIFI_HOSTNAME "cinema-door-iot"
+#endif
+
 namespace {
 constexpr uint8_t kDoorRelayChannel = 1;
 constexpr uint32_t kDefaultOpenSeconds = 10;
@@ -104,6 +108,7 @@ void handleNotFound() { sendError(404, "Not found"); }
 void connectWiFi() {
   WiFi.mode(WIFI_STA);
   WiFi.setSleep(false);
+  WiFi.setHostname(WIFI_HOSTNAME);
 
   if (String(WIFI_PASSWORD).length() == 0) {
     WiFi.begin(WIFI_SSID);
