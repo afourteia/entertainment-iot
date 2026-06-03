@@ -5,7 +5,7 @@
 **/.pioenvs/
 .piolibdeps/
 **/.piolibdeps/
-
+**/.pio-core/
 # Backups of accidental nested Git repositories
 .git-backups/
 
