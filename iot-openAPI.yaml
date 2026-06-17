@@ -20,7 +20,7 @@ tags:
   - name: Billiard Parent
     description: Relay status and control for billiard parent and child relays.
   - name: Cinema Door
-    description: Timed door relay activation.
+    description: Timed and keep-open door relay activation.
 paths:
   /status:
     get:
@@ -152,6 +152,11 @@ paths:
       tags:
         - Cinema Door
       summary: Open the cinema door relay for a timed duration
+      description: >
+        By default, opens relay channel 1 for the requested timed duration. Set
+        `keepOpen=true` to hold the relay open indefinitely. While keep-open mode is
+        active, regular `/open` requests leave it active. Send `keepOpen=false`
+        explicitly to clear keep-open mode and return the door to timed operation.
       servers:
         - url: http://{cinemaDoorIp}
           variables:
@@ -168,6 +173,14 @@ paths:
             default: 10
           example: 10
           description: Number of seconds to keep relay channel 1 energized.
+        - name: keepOpen
+          in: query
+          required: false
+          schema:
+            type: boolean
+            default: false
+          example: true
+          description: Set true to hold relay channel 1 open indefinitely, or false to explicitly return to timed operation.
       responses:
         "200":
           description: Door relay opened.
@@ -178,9 +191,10 @@ paths:
               example:
                 relay: 1
                 open: true
+                keepOpen: false
                 seconds: 10
         "400":
-          description: Invalid duration.
+          description: Invalid duration or keep-open flag.
           content:
             application/json:
               schema:
@@ -229,6 +243,7 @@ components:
       required:
         - relay
         - open
+        - keepOpen
         - seconds
       properties:
         relay:
@@ -237,16 +252,23 @@ components:
             - 1
         open:
           type: boolean
+        keepOpen:
+          type: boolean
+          description: True when the relay is being held open indefinitely.
         seconds:
           type: integer
+          nullable: true
           minimum: 1
           maximum: 120
+          description: Timed open duration, or null for keep-open requests.
     CinemaDoorHeartbeat:
       type: object
       required:
         - ok
         - role
         - uptimeMs
+        - open
+        - keepOpen
       properties:
         ok:
           type: boolean
@@ -259,6 +281,12 @@ components:
         uptimeMs:
           type: integer
           minimum: 0
+        open:
+          type: boolean
+          description: Current desired relay state for the cinema door.
+        keepOpen:
+          type: boolean
+          description: True when auto-close is disabled for a keep-open request.
     Error:
       type: object
       required:

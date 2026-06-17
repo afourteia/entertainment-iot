@@ -17,6 +17,7 @@ constexpr uint32_t kMaxOpenSeconds = 120;
 
 WebServer server(80);
 bool doorOpen = false;
+bool keepDoorOpen = false;
 uint32_t closeAtMs = 0;
 
 void forceRelaysOff() {
@@ -70,18 +71,70 @@ bool parseSeconds(uint32_t *seconds) {
   return true;
 }
 
+bool parseBoolArg(const char *name, bool *value, bool *present) {
+  if (!server.hasArg(name)) {
+    *present = false;
+    *value = false;
+    return true;
+  }
+
+  *present = true;
+  String raw = server.arg(name);
+  raw.trim();
+  raw.toLowerCase();
+  if (raw.length() == 0) {
+    *value = true;
+    return true;
+  }
+
+  if (raw == "1" || raw == "true" || raw == "yes" || raw == "on") {
+    *value = true;
+    return true;
+  }
+
+  if (raw == "0" || raw == "false" || raw == "no" || raw == "off") {
+    *value = false;
+    return true;
+  }
+
+  return false;
+}
+
 void handleOpen() {
+  bool hasKeepOpenArg = false;
+  bool requestedKeepOpen = false;
+  if (!parseBoolArg("keepOpen", &requestedKeepOpen, &hasKeepOpenArg)) {
+    sendError(400, "keepOpen must be true or false");
+    return;
+  }
+
+  if (hasKeepOpenArg && requestedKeepOpen) {
+    keepDoorOpen = true;
+    closeAtMs = 0;
+    setDoorRelay(true);
+
+    sendJson(200, "{\"relay\":1,\"open\":true,\"keepOpen\":true,\"seconds\":null}");
+    return;
+  }
+
+  if (!hasKeepOpenArg && keepDoorOpen) {
+    setDoorRelay(true);
+    sendJson(200, "{\"relay\":1,\"open\":true,\"keepOpen\":true,\"seconds\":null}");
+    return;
+  }
+
   uint32_t seconds = 0;
   if (!parseSeconds(&seconds)) {
     sendError(400, "seconds must be between 1 and 120");
     return;
   }
 
+  keepDoorOpen = false;
   setDoorRelay(true);
   closeAtMs = millis() + seconds * 1000UL;
 
   String json = "{";
-  json += "\"relay\":1,\"open\":true,\"seconds\":";
+  json += "\"relay\":1,\"open\":true,\"keepOpen\":false,\"seconds\":";
   json += String(seconds);
   json += "}";
   sendJson(200, json);
@@ -91,6 +144,10 @@ void handleStatus() {
   String json = "{";
   json += "\"ok\":true,\"role\":\"cinema-door\",\"uptimeMs\":";
   json += String(millis());
+  json += ",\"open\":";
+  json += (doorOpen ? "true" : "false");
+  json += ",\"keepOpen\":";
+  json += (keepDoorOpen ? "true" : "false");
   json += "}";
   sendJson(200, json);
 }
@@ -117,7 +174,7 @@ void configureHttpServer() {
 }
 
 void tickDoorAutoClose() {
-  if (doorOpen && static_cast<int32_t>(millis() - closeAtMs) >= 0) {
+  if (!keepDoorOpen && doorOpen && static_cast<int32_t>(millis() - closeAtMs) >= 0) {
     setDoorRelay(false);
   }
 }
