@@ -8,7 +8,7 @@ BLECharacteristic* pRxCharacteristic;
 
 class MyServerCallbacks : public BLEServerCallbacks {                           //By overriding the onConnect() and onDisconnect() functions
     void onConnect(BLEServer* pServer) {                                        // When the Device is connected, "Device connected" is printed.
-    Serial.println("Device connected"); 
+    Serial.println("Device connected");
   }
 
   void onDisconnect(BLEServer* pServer) {                                       // "Device disconnected" will be printed when the device is disconnected
@@ -17,10 +17,10 @@ class MyServerCallbacks : public BLEServerCallbacks {                           
     BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();                 // Re-broadcast so that the device can query
     pAdvertising->addServiceUUID(SERVICE_UUID);                                 // Re-broadcast so that the device can query
     pAdvertising->setScanResponse(true);                                        // Re-broadcast so that the device can query
-    pAdvertising->setMinPreferred(0x06);                                        // Re-broadcast so that the device can query 
-    pAdvertising->setMinPreferred(0x12);                                        // Re-broadcast so that the device can query 
-    BLEDevice::startAdvertising();                                              // Re-broadcast so that the device can query 
-    pRxCharacteristic->notify();                                                // Re-broadcast so that the device can query  
+    pAdvertising->setMinPreferred(0x06);                                        // Re-broadcast so that the device can query
+    pAdvertising->setMinPreferred(0x12);                                        // Re-broadcast so that the device can query
+    BLEDevice::startAdvertising();                                              // Re-broadcast so that the device can query
+    pRxCharacteristic->notify();                                                // Re-broadcast so that the device can query
     pAdvertising->start();                                                      // Re-broadcast so that the device can query
   }
 };
@@ -39,7 +39,7 @@ class MyRXCallback : public BLECharacteristicCallbacks {
       {
         if(Extension_Enable)
         {
-          printf("%s\n", rxValue.c_str());                                      // Print output through the serial port       
+          printf("%s\n", rxValue.c_str());                                      // Print output through the serial port
           uint8_t* valueBytes = reinterpret_cast<uint8_t*>(const_cast<char*>(rxValue.c_str())); // Convert value to uint8 t*
           if(valueBytes[0] == 0x06)                                             // Instruction check correct
             RS485_Analysis(valueBytes);                                         // Control external relay
@@ -49,13 +49,13 @@ class MyRXCallback : public BLECharacteristicCallbacks {
         else
           printf("Note : Non-instruction data was received or external relays are not enabled - Bluetooth !\r\n");
       }
-      
+
       else if(rxValue.length() == 14)
       {
         if(RTC_Event_Enable)
-        {   
-          // printf("%s\n", rxValue.c_str());                                      // Print output through the serial port  
-          uint8_t* valueBytes = reinterpret_cast<uint8_t*>(const_cast<char*>(rxValue.c_str())); 
+        {
+          // printf("%s\n", rxValue.c_str());                                      // Print output through the serial port
+          uint8_t* valueBytes = reinterpret_cast<uint8_t*>(const_cast<char*>(rxValue.c_str()));
           BLE_Set_RTC_Event(valueBytes);
         }
         else
@@ -90,7 +90,7 @@ void BLE_Set_RTC_Event(uint8_t* valueBytes){
       uint8_t CHx = valueBytes[10]/16;
       bool State =  (valueBytes[10] % 16);
       TimerEvent_CHx_Set(Event_Time,CHx, State, Repetition);
-    } 
+    }
   }
 }
 void Bluetooth_SendData(char* Data) {  // Send data using Bluetooth
@@ -107,10 +107,10 @@ void Bluetooth_Init()
   /*************************************************************************
   Bluetooth
   *************************************************************************/
-  BLEDevice::init("ESP32-S3-POE-ETH-8DI-8RO");                                        // Initialize Bluetooth and start broadcasting                           
-  pServer = BLEDevice::createServer();                                          
-  pServer->setCallbacks(new MyServerCallbacks());                               
-  BLEService* pService = pServer->createService(SERVICE_UUID);                  
+  BLEDevice::init("ESP32-S3-POE-ETH-8DI-8RO");                                        // Initialize Bluetooth and start broadcasting
+  pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks());
+  BLEService* pService = pServer->createService(SERVICE_UUID);
   pTxCharacteristic = pService->createCharacteristic(
                                     TX_CHARACTERISTIC_UUID,
                                     BLECharacteristic:: PROPERTY_READ);         // The eigenvalues are readable and can be read by remote devices
@@ -119,27 +119,27 @@ void Bluetooth_Init()
                                     BLECharacteristic::PROPERTY_WRITE);         // The eigenvalues are writable and can be written to by remote devices
   pRxCharacteristic->setCallbacks(new MyRXCallback());
 
-  pRxCharacteristic->setValue("Successfully Connect To ESP32-S3-POE-ETH-8DI-8RO");      
-  pService->start();   
+  pRxCharacteristic->setValue("Successfully Connect To ESP32-S3-POE-ETH-8DI-8RO");
+  pService->start();
 
-  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();                   
-  pAdvertising->addServiceUUID(SERVICE_UUID);                                   
-  pAdvertising->setScanResponse(true);                                          
-  pAdvertising->setMinPreferred(0x06);                                          
-  pAdvertising->setMinPreferred(0x12);                                          
-  BLEDevice::startAdvertising();                                                
-  pRxCharacteristic->notify();                                                    
+  BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
+  pAdvertising->addServiceUUID(SERVICE_UUID);
+  pAdvertising->setScanResponse(true);
+  pAdvertising->setMinPreferred(0x06);
+  pAdvertising->setMinPreferred(0x12);
+  BLEDevice::startAdvertising();
+  pRxCharacteristic->notify();
   pAdvertising->start();
-  RGB_Open_Time(0, 0, 60,1000, 0); 
+  RGB_Open_Time(0, 0, 60,1000, 0);
   printf("Now you can read it in your phone!\r\n");
   xTaskCreatePinnedToCore(
-    BLETask,    
-    "BLETask",   
-    4096,                
-    NULL,                 
-    2,                   
-    NULL,                 
-    0                   
+    BLETask,
+    "BLETask",
+    4096,
+    NULL,
+    2,
+    NULL,
+    0
   );
 }
 

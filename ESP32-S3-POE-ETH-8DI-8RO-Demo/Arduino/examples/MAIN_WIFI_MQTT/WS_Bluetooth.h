@@ -18,7 +18,7 @@
 #define Bluetooth_Mode    2
 
 
-void Bluetooth_SendData(char * Data);   
+void Bluetooth_SendData(char * Data);
 void Bluetooth_Init();
 void BLETask(void *parameter);
 void BLE_Set_RTC_Event(uint8_t* valueBytes);

@@ -6,7 +6,7 @@
 
 
 /*************************************************************  I/O  *************************************************************/
-#define Relay_Number_MAX  8 
+#define Relay_Number_MAX  8
 #define GPIO_PIN_CH1      EXIO_PIN1    // CH1 Control GPIO
 #define GPIO_PIN_CH2      EXIO_PIN2    // CH2 Control GPIO
 #define GPIO_PIN_CH3      EXIO_PIN3    // CH3 Control GPIO

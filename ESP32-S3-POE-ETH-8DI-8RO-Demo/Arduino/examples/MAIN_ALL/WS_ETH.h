@@ -34,7 +34,7 @@
   ETHClass ETH1(1);
 #endif
 
-#define timezone 8        // china 
+#define timezone 8        // china
 
 void ETH_Init(void);
 void ETH_Loop(void);

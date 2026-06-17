@@ -25,8 +25,8 @@ void PCF85063_Init(void)      // PCF85063 initialized
 		printf("PCF85063 failed to be initialized.state :%d\r\n",Value);
 	else
 		printf("PCF85063 is running,state :%d\r\n",Value);
-    
-  // 
+
+  //
   // Update_datetime.year = 2024;
   // Update_datetime.month = 9;
   // Update_datetime.day = 20;
@@ -36,22 +36,22 @@ void PCF85063_Init(void)      // PCF85063 initialized
   // Update_datetime.second = 0;
   // PCF85063_Set_All(Update_datetime);
   xTaskCreatePinnedToCore(
-    PCF85063Task,    
-    "PCF85063Task",   
-    4096,                
-    NULL,                 
-    3,                   
-    NULL,                 
-    0                   
-  );  
+    PCF85063Task,
+    "PCF85063Task",
+    4096,
+    NULL,
+    3,
+    NULL,
+    0
+  );
   // xTaskCreatePinnedToCore(
-  //   Time_printf,    
-  //   "Time_printf",   
-  //   4096,                
-  //   NULL,                 
-  //   3,                   
-  //   NULL,                 
-  //   0                   
+  //   Time_printf,
+  //   "Time_printf",
+  //   4096,
+  //   NULL,
+  //   3,
+  //   NULL,
+  //   0
   // );
 }
 
@@ -70,7 +70,7 @@ void PCF85063_Reset()  // Reset PCF85063
 	if(ret != ESP_OK)
 		printf("PCF85063 : Reset failure\r\n");
 }
-void PCF85063_Set_Time(datetime_t time) // Set Time 
+void PCF85063_Set_Time(datetime_t time) // Set Time
 {
 	uint8_t buf[3] = {decToBcd(time.second),
 					  decToBcd(time.minute),
@@ -184,6 +184,6 @@ static int bcdToDec(uint8_t val) // Convert binary coded decimal to normal decim
 }
 void datetime_to_str(char *datetime_str,datetime_t time)
 {
-	sprintf(datetime_str, " %d.%d.%d  %d:%d:%d  %s", time.year, time.month, 
+	sprintf(datetime_str, " %d.%d.%d  %d:%d:%d  %s", time.year, time.month,
 			time.day, time.hour, time.minute, time.second, Week[time.dotw]);
-} 
+}

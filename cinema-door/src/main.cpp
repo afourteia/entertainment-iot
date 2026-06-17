@@ -1,21 +1,13 @@
 #include <Arduino.h>
 #include <WebServer.h>
-#include <WiFi.h>
+#include "WS_ETH.h"
 
 #include "I2C_Driver.h"
 #include "WS_GPIO.h"
 #include "WS_Relay.h"
 
-#ifndef WIFI_SSID
-#define WIFI_SSID ""
-#endif
-
-#ifndef WIFI_PASSWORD
-#define WIFI_PASSWORD ""
-#endif
-
-#ifndef WIFI_HOSTNAME
-#define WIFI_HOSTNAME "cinema-door-iot"
+#ifndef ETH_HOSTNAME
+#define ETH_HOSTNAME "cinema-door-iot"
 #endif
 
 namespace {
@@ -105,29 +97,14 @@ void handleStatus() {
 
 void handleNotFound() { sendError(404, "Not found"); }
 
-void connectWiFi() {
-  WiFi.disconnect(true, true);
-  delay(100);
-  WiFi.mode(WIFI_STA);
-  WiFi.setSleep(false);
-
-  if (!WiFi.setHostname(WIFI_HOSTNAME)) {
-    printf("Failed to set WiFi hostname to \"%s\"\r\n", WIFI_HOSTNAME);
-  }
-
-  if (String(WIFI_PASSWORD).length() == 0) {
-    WiFi.begin(WIFI_SSID);
+void connectEthernet() {
+  WS_ETH_Init(ETH_HOSTNAME);
+  if (WS_ETH_connected()) {
+    IPAddress ip = WS_ETH_localIP();
+    printf("Ethernet connected: %d.%d.%d.%d\r\n", ip[0], ip[1], ip[2], ip[3]);
   } else {
-    WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    printf("Ethernet did not get an IP\r\n");
   }
-
-  printf("Connecting to WiFi SSID \"%s\"", WIFI_SSID);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    printf(".");
-  }
-  printf("\r\nWiFi connected: %s\r\n", WiFi.localIP().toString().c_str());
-  printf("WiFi hostname: %s\r\n", WiFi.getHostname());
 }
 
 void configureHttpServer() {
@@ -152,7 +129,7 @@ void setup() {
   I2C_Init();
   Relay_Init();
   forceRelaysOff();
-  connectWiFi();
+  connectEthernet();
   configureHttpServer();
 }
 

@@ -8,18 +8,18 @@ const unsigned char Event_cycle[4][13] = {"Aperiodicity","everyday","Weekly","mo
 void RTC_Init(void){
   PCF85063_Init();
   xTaskCreatePinnedToCore(
-    RTCTask,    
-    "RTCTask",   
-    4096,                
-    NULL,                 
-    3,                   
-    NULL,                 
-    0                   
+    RTCTask,
+    "RTCTask",
+    4096,
+    NULL,
+    3,
+    NULL,
+    0
   );
 }
 uint8_t Timing_events_Num = 0;
 void RTCTask(void *parameter)
-{ 
+{
   static uint8_t Time_Old = 0;
   while(1){
     if(Timing_events_Num){
@@ -61,35 +61,35 @@ void RTCTask(void *parameter)
 }
 
 void TimerEvent_handling(Timing_RTC event){
-  uint8_t Retain_channels = 0;  
+  uint8_t Retain_channels = 0;
   printf("Event %d : \r\n", event.Event_Number);
   char datetime_str[50];
   datetime_to_str(datetime_str,event.Time);
   for (int i = 0; i < Relay_Number_MAX; i++) {
     if(*(&(event.Relay_CH1)+i) == STATE_Retain)                     // Find the modified channel
-      Retain_channels ++;                                     // Number of unmodified channels  
+      Retain_channels ++;                                     // Number of unmodified channels
   }
-  if(Retain_channels < Relay_Number_MAX - 1){  
+  if(Retain_channels < Relay_Number_MAX - 1){
     printf("%s\r\n", datetime_str);
-    printf("CHx Open   : ");  
-    int j = 0;       
+    printf("CHx Open   : ");
+    int j = 0;
     for (j = 0; j < Relay_Number_MAX; j++) {
-      if(*(&(event.Relay_CH1)+j) == STATE_Open)                          
-        printf("CH%d    ", j+1); 
-    } 
-    printf("\r\nCHx Closs  : ");         
+      if(*(&(event.Relay_CH1)+j) == STATE_Open)
+        printf("CH%d    ", j+1);
+    }
+    printf("\r\nCHx Closs  : ");
     for (j = 0; j < Relay_Number_MAX; j++) {
-      if(*(&(event.Relay_CH1)+j) == STATE_Closs)                          
-        printf("CH%d    ", j+1); 
+      if(*(&(event.Relay_CH1)+j) == STATE_Closs)
+        printf("CH%d    ", j+1);
     }
     if(Retain_channels){
-      printf("\r\nCHx Retain : ");         
+      printf("\r\nCHx Retain : ");
       for (j = 0; j < Relay_Number_MAX; j++) {
-        if(*(&(event.Relay_CH1)+j) == STATE_Retain)                          
-          printf("CH%d    ", j+1); 
+        if(*(&(event.Relay_CH1)+j) == STATE_Retain)
+          printf("CH%d    ", j+1);
       }
     }
-    printf("\r\n");   
+    printf("\r\n");
     Relay_Immediate_CHxn(&(event.Relay_CH1), RTC_Mode);
     printf("\r\n");
   }
@@ -98,12 +98,12 @@ void TimerEvent_handling(Timing_RTC event){
     for (int x = 0; x < Relay_Number_MAX; x++) {
       if(*(&(event.Relay_CH1)+x) != STATE_Retain){                   // Find the modified channel
         if(*(&(event.Relay_CH1)+x)){
-          printf("CH%d Open\r\n", x); 
+          printf("CH%d Open\r\n", x);
           Relay_Immediate(x, true, RTC_Mode);
           printf("\r\n");
         }
         else{
-          printf("CH%d Closs\r\n", x); 
+          printf("CH%d Closs\r\n", x);
           Relay_Immediate(x, false, RTC_Mode);
           printf("\r\n");
         }
@@ -130,7 +130,7 @@ void TimerEvent_CHx_Set(datetime_t time,uint8_t CHx, bool State, Repetition_even
     printf("Note : The number of scheduled events is full.\r\n");
   }
   else{
-    RGB_Open_Time(50, 36, 0, 1000, 0); 
+    RGB_Open_Time(50, 36, 0, 1000, 0);
     CHx_State[Timing_events_Num].Enable_Flag = true;
     CHx_State[Timing_events_Num].Event_Number = Timing_events_Num + 1;
     *(&(CHx_State[Timing_events_Num].Relay_CH1)+CHx) = (Status_adjustment)State;
@@ -161,11 +161,11 @@ void TimerEvent_CHxs_Set(datetime_t time,uint8_t PinState, Repetition_event Repe
     printf("Note : The number of scheduled events is full.\r\n");
   }
   else{
-    RGB_Open_Time(50, 36, 0, 1000, 0); 
+    RGB_Open_Time(50, 36, 0, 1000, 0);
     CHx_State[Timing_events_Num].Enable_Flag = true;
     CHx_State[Timing_events_Num].Event_Number = Timing_events_Num + 1;
     for (int i = 0; i < Relay_Number_MAX; i++) {
-      *(&(CHx_State[Timing_events_Num].Relay_CH1)+i) = (Status_adjustment)((PinState >> i) & 0x01); 
+      *(&(CHx_State[Timing_events_Num].Relay_CH1)+i) = (Status_adjustment)((PinState >> i) & 0x01);
     }
     CHx_State[Timing_events_Num].Time = time;
     CHx_State[Timing_events_Num].repetition_State = Repetition;
@@ -173,7 +173,7 @@ void TimerEvent_CHxs_Set(datetime_t time,uint8_t PinState, Repetition_event Repe
     datetime_to_str(datetime_str,time);
     printf("New timing event%d :\r\n       %s \r\n",Timing_events_Num, datetime_str);
     printf("        CHx   :");
-    for (int i = 0; i < Relay_Number_MAX; i++) 
+    for (int i = 0; i < Relay_Number_MAX; i++)
       printf("CH%d      ", i+1);
     printf("\r\n        State :");
     for (int i = 0; i < Relay_Number_MAX; i++) {
@@ -184,18 +184,18 @@ void TimerEvent_CHxs_Set(datetime_t time,uint8_t PinState, Repetition_event Repe
     }
     printf("\r\n");
     printf("        ----- %s\r\n\r\n", Event_cycle[Repetition]);
-    printf("\r\n");  
+    printf("\r\n");
     Buzzer_Open_Time(700, 0);
 
-    int len = 0;  
-    char Event_content[1000];  
+    int len = 0;
+    char Event_content[1000];
     len += snprintf(Event_content + len, sizeof(Event_content) - len, "&nbsp;&nbsp;&nbsp;&nbsp;CHx&nbsp;&nbsp;:");
     for (int i = 0; i < Relay_Number_MAX; i++) {
       len += snprintf(Event_content + len, sizeof(Event_content) - len, "CH%d&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", i + 1);
     }
     len += snprintf(Event_content + len, sizeof(Event_content) - len, "\\n &nbsp;&nbsp;&nbsp;&nbsp;State :");
     for (int i = 0; i < Relay_Number_MAX; i++) {
-      if ((PinState >> i) & 0x01)  
+      if ((PinState >> i) & 0x01)
         len += snprintf(Event_content + len, sizeof(Event_content) - len, "Open&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
       else
         len += snprintf(Event_content + len, sizeof(Event_content) - len, "Closs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;");
@@ -215,11 +215,11 @@ void TimerEvent_CHxn_Set(datetime_t time,Status_adjustment *Relay_n, Repetition_
     printf("Note : The number of scheduled events is full.\r\n");
   }
   else{
-    RGB_Open_Time(50, 36, 0, 1000, 0); 
+    RGB_Open_Time(50, 36, 0, 1000, 0);
     CHx_State[Timing_events_Num].Enable_Flag = true;
     CHx_State[Timing_events_Num].Event_Number = Timing_events_Num + 1;
     for (int i = 0; i < Relay_Number_MAX; i++) {
-      *(&(CHx_State[Timing_events_Num].Relay_CH1)+i) = Relay_n[i]; 
+      *(&(CHx_State[Timing_events_Num].Relay_CH1)+i) = Relay_n[i];
     }
     CHx_State[Timing_events_Num].Time = time;
     CHx_State[Timing_events_Num].repetition_State = Repetition;
@@ -227,7 +227,7 @@ void TimerEvent_CHxn_Set(datetime_t time,Status_adjustment *Relay_n, Repetition_
     datetime_to_str(datetime_str,time);
     printf("New timing event%d :\r\n       %s \r\n",Timing_events_Num, datetime_str);
     printf("        CHx   :");
-    for (int i = 0; i < Relay_Number_MAX; i++) 
+    for (int i = 0; i < Relay_Number_MAX; i++)
       printf("CH%d      ", i+1);
     printf("\r\n        State :");
     for (int i = 0; i < Relay_Number_MAX; i++) {
@@ -242,9 +242,9 @@ void TimerEvent_CHxn_Set(datetime_t time,Status_adjustment *Relay_n, Repetition_
     printf("        ----- %s\r\n\r\n", Event_cycle[Repetition]);
     printf("\r\n");
     Buzzer_Open_Time(700, 0);
-    
-    int len = 0;  
-    char Event_content[1000];  
+
+    int len = 0;
+    char Event_content[1000];
     len += snprintf(Event_content + len, sizeof(Event_content) - len, "&nbsp;&nbsp;&nbsp;&nbsp;CHx&nbsp;&nbsp;:");
     for (int i = 0; i < Relay_Number_MAX; i++) {
       len += snprintf(Event_content + len, sizeof(Event_content) - len, "CH%d&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", i + 1);
@@ -259,68 +259,68 @@ void TimerEvent_CHxn_Set(datetime_t time,Status_adjustment *Relay_n, Repetition_
         len += snprintf(Event_content + len, sizeof(Event_content) - len, "Retain&nbsp;&nbsp;&nbsp;");
     }
     len += snprintf(Event_content + len, sizeof(Event_content) - len, "\\n&nbsp;&nbsp;&nbsp;&nbsp;----- %s\\n\\n", Event_cycle[Repetition]);
-    // printf("%s\r\n", Event_content);  
+    // printf("%s\r\n", Event_content);
     sprintf(Event_str[Timing_events_Num-1], "Event %d : %s \\n%s", Timing_events_Num, datetime_str,Event_content);
   }
 }
 
 void TimerEvent_printf(Timing_RTC event){
   uint8_t Retain_channels = 0;
-  uint8_t open[8]={0};      
+  uint8_t open[8]={0};
   printf("Event %d : \r\n", event.Event_Number);
   char datetime_str[50];
   datetime_to_str(datetime_str,event.Time);
   for (int i = 0; i < Relay_Number_MAX; i++) {
     if(*(&(event.Relay_CH1)+i) == STATE_Retain)                     // Find the modified channel
-      Retain_channels ++;                                     // Number of unmodified channels  
+      Retain_channels ++;                                     // Number of unmodified channels
     else
       open[i] = *(&(event.Relay_CH1)+i);
   }
-  if(Retain_channels == 0){                                   // All channels have been modified   (use TimerEvent_CHxs_Set())   
+  if(Retain_channels == 0){                                   // All channels have been modified   (use TimerEvent_CHxs_Set())
     printf("%s\r\n", datetime_str);
-    printf(" CHx Open  : ");         
+    printf(" CHx Open  : ");
     for (int j = 0; j < Relay_Number_MAX; j++) {
-      if(open[j])                          
-        printf("CH%d    ", j); 
-    } 
-    printf("\r\n CHx Closs : ");         
-    for (int k = 0; k < Relay_Number_MAX; k++) {
-      if(!open[k])                          
-        printf("CH%d    ", k); 
+      if(open[j])
+        printf("CH%d    ", j);
     }
-    printf("\r\n");    
+    printf("\r\n CHx Closs : ");
+    for (int k = 0; k < Relay_Number_MAX; k++) {
+      if(!open[k])
+        printf("CH%d    ", k);
+    }
+    printf("\r\n");
   }
   else if(Retain_channels == Relay_Number_MAX - 1){           // Modified a channel                (use TimerEvent_CHx_Set())
     printf("%s    ,", datetime_str);
     for (int x = 0; x < Relay_Number_MAX; x++) {
       if(*(&(event.Relay_CH1)+x) != STATE_Retain){                   // Find the modified channel
         if(*(&(event.Relay_CH1)+x))
-          printf("CH%d Open\r\n", x); 
+          printf("CH%d Open\r\n", x);
         else
-          printf("CH%d Closs\r\n", x); 
+          printf("CH%d Closs\r\n", x);
         break;
       }
     }
   }
   else{
     printf("%s\r\n", datetime_str);
-    printf("CHx Open   : ");  
-    int j = 0;       
+    printf("CHx Open   : ");
+    int j = 0;
     for (j = 0; j < Relay_Number_MAX; j++) {
-      if(open[j] == STATE_Open)                          
-        printf("CH%d    ", j+1); 
-    } 
-    printf("\r\nCHx Closs  : ");         
-    for (j = 0; j < Relay_Number_MAX; j++) {
-      if(open[j] == STATE_Closs)                          
-        printf("CH%d    ", j+1); 
+      if(open[j] == STATE_Open)
+        printf("CH%d    ", j+1);
     }
-    printf("\r\nCHx Retain : ");         
+    printf("\r\nCHx Closs  : ");
     for (j = 0; j < Relay_Number_MAX; j++) {
-      if(open[j] == STATE_Retain)                          
-        printf("CH%d    ", j+1); 
+      if(open[j] == STATE_Closs)
+        printf("CH%d    ", j+1);
     }
-    printf("\r\n");   
+    printf("\r\nCHx Retain : ");
+    for (j = 0; j < Relay_Number_MAX; j++) {
+      if(open[j] == STATE_Retain)
+        printf("CH%d    ", j+1);
+    }
+    printf("\r\n");
   }
 }
 
@@ -334,11 +334,11 @@ void TimerEvent_printf_ALL(void)
   printf("/******************* Current RTC event *******************/\r\n\r\n ");
 }
 void TimerEvent_Del(Timing_RTC event){
-  RGB_Open_Time(20, 0, 50, 1000, 0); 
+  RGB_Open_Time(20, 0, 50, 1000, 0);
   printf("Example Delete an RTC event%d\r\n\r\n",event.Event_Number);
   for (int i = event.Event_Number; i < Timing_events_Number_MAX; i++) {
     CHx_State[i].Event_Number = CHx_State[i].Event_Number -1;
-    CHx_State[i-1] = CHx_State[i];  
+    CHx_State[i-1] = CHx_State[i];
   }
   CHx_State[Timing_events_Number_MAX - 1] = CHx_State_Default;
   memset(Event_str[Timing_events_Number_MAX - 1], 0, sizeof(Event_str[Timing_events_Number_MAX - 1]));
@@ -346,5 +346,5 @@ void TimerEvent_Del(Timing_RTC event){
 }
 void TimerEvent_Del_Number(uint8_t Event_Number){
   TimerEvent_Del(CHx_State[Event_Number - 1]);
-  Buzzer_Open_Time(700, 300); 
+  Buzzer_Open_Time(700, 300);
 }

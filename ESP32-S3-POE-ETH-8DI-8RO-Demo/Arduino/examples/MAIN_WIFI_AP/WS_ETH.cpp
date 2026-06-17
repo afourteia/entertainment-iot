@@ -19,7 +19,7 @@ void onEvent(arduino_event_id_t event, arduino_event_info_t info) {
       break;
     case ARDUINO_EVENT_ETH_CONNECTED: printf("ETH Connected\r\n"); break;
     case ARDUINO_EVENT_ETH_GOT_IP:    printf("ETH Got IP: '%s'\n", esp_netif_get_desc(info.got_ip.esp_netif)); //printf("%s\r\n",ETH);
-      ETH_ip = ETH.localIP(); 
+      ETH_ip = ETH.localIP();
       printf("ETH Got IP: %d.%d.%d.%d\n", ETH_ip[0], ETH_ip[1], ETH_ip[2], ETH_ip[3]);
 #if USE_TWO_ETH_PORTS
       // printf("%d\r\n",ETH1);
@@ -71,20 +71,20 @@ void ETH_Init(void) {
   ETH1.begin(ETH1_PHY_TYPE, ETH1_PHY_ADDR, ETH1_PHY_CS, ETH1_PHY_IRQ, ETH1_PHY_RST, SPI);
 #endif
   xTaskCreatePinnedToCore(
-    EthernetTask,    
-    "EthernetTask",   
-    4096,                
-    NULL,                 
-    2,                   
-    NULL,                 
-    0                   
+    EthernetTask,
+    "EthernetTask",
+    4096,
+    NULL,
+    2,
+    NULL,
+    0
   );
 }
 void EthernetTask(void *parameter) {
   while(1){
     if (eth_connected && !eth_connected_Old) {
       eth_connected_Old = eth_connected;
-      RGB_Open_Time(0, 60, 0,1000, 0); 
+      RGB_Open_Time(0, 60, 0,1000, 0);
       printf("Network port connected!\r\n");
       Acquisition_time();
     }
@@ -103,7 +103,7 @@ void Acquisition_time(void) {                                   // Get the netwo
   time_t currentTime = timeClient.getEpochTime();
   while(currentTime < 1609459200)                           // Using the current timestamp to compare with a known larger value,1609459200 is a known larger timestamp value that corresponds to January 1, 2021
   {
-    timeClient.update();  
+    timeClient.update();
     currentTime = timeClient.getEpochTime();
     printf("ETH - Online clock error!!!\r\n");
   }

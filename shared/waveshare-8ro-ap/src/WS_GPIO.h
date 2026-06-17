@@ -9,7 +9,7 @@
 
 /***********************************************************  Buzzer  ***********************************************************/
 #define GPIO_PIN_Buzzer 46      // Buzzer Control GPIO
-#define PWM_Channel     1       // PWM Channel   
+#define PWM_Channel     1       // PWM Channel
 #define Frequency       1000    // PWM frequencyconst
 #define Resolution      8       // PWM resolution ratio
 #define Dutyfactor      200     // PWM Dutyfactor
@@ -17,7 +17,7 @@
 
 
 #define RGB_Indicate_Number  10 // Number of saved RGB indicator signals
-typedef struct { 
+typedef struct {
   uint8_t Red = 0;
   uint8_t Green = 0;
   uint8_t Blue = 0;
@@ -26,7 +26,7 @@ typedef struct {
 } RGB_Indicate;
 
 #define Buzzer_Indicate_Number  10 // Number of saved RGB indicator signals
-typedef struct { 
+typedef struct {
   uint16_t Buzzer_Time = 0;         // Buzzer duration
   uint16_t Buzzer_Flicker = 0;          // Buzzer interval duration
 } Buzzer_Indicate;
@@ -39,5 +39,5 @@ void RGBTask(void *parameter);
 void Set_Dutyfactor(uint16_t dutyfactor);
 void Buzzer_Open(void);
 void Buzzer_Closs(void);
-void Buzzer_Open_Time(uint16_t Time, uint16_t flicker_time); 
+void Buzzer_Open_Time(uint16_t Time, uint16_t flicker_time);
 void BuzzerTask(void *parameter);

@@ -12,7 +12,7 @@ void SD_Init() {
     printf("SD MMC: Pin change failed!\r\n");
     return;
   }
-  if (SD_MMC.begin("/sdcard", true, true)) {                // "/sdcard", true, true     or  "/sdcard", true, false                            
+  if (SD_MMC.begin("/sdcard", true, true)) {                // "/sdcard", true, true     or  "/sdcard", true, false
     printf("SD card initialization successful!\r\n");
   } else {
     printf("SD card initialization failed!\r\n");
@@ -41,7 +41,7 @@ void SD_Init() {
     printf("Free space: %llu\n", totalBytes - usedBytes);
   }
 }
-bool File_Search(const char* directory, const char* fileName)    
+bool File_Search(const char* directory, const char* fileName)
 {
   File Path = SD_MMC.open(directory);
   if (!Path) {
@@ -50,54 +50,54 @@ bool File_Search(const char* directory, const char* fileName)
   }
   File file = Path.openNextFile();
   while (file) {
-    if (strcmp(file.name(), fileName) == 0) {                           
+    if (strcmp(file.name(), fileName) == 0) {
       if (strcmp(directory, "/") == 0)
-        printf("File '%s%s' found in root directory.\r\n",directory,fileName);  
+        printf("File '%s%s' found in root directory.\r\n",directory,fileName);
       else
-        printf("File '%s/%s' found in root directory.\r\n",directory,fileName); 
-      Path.close();                                                     
-      return true;                                                     
+        printf("File '%s/%s' found in root directory.\r\n",directory,fileName);
+      Path.close();
+      return true;
     }
-    file = Path.openNextFile();                                        
+    file = Path.openNextFile();
   }
   if (strcmp(directory, "/") == 0)
-    printf("File '%s%s' not found in root directory.\r\n",directory,fileName);           
+    printf("File '%s%s' not found in root directory.\r\n",directory,fileName);
   else
-    printf("File '%s/%s' not found in root directory.\r\n",directory,fileName);          
-  Path.close();                                                         
-  return false;                                                         
+    printf("File '%s/%s' not found in root directory.\r\n",directory,fileName);
+  Path.close();
+  return false;
 }
-uint16_t Folder_retrieval(const char* directory, const char* fileExtension, char File_Name[][100],uint16_t maxFiles)    
+uint16_t Folder_retrieval(const char* directory, const char* fileExtension, char File_Name[][100],uint16_t maxFiles)
 {
   File Path = SD_MMC.open(directory);
   if (!Path) {
     printf("Path: <%s> does not exist\r\n",directory);
     return false;
   }
-  
+
   uint16_t fileCount = 0;
   char filePath[100];
   File file = Path.openNextFile();
   while (file && fileCount < maxFiles) {
     if (!file.isDirectory() && strstr(file.name(), fileExtension)) {
-      strncpy(File_Name[fileCount], file.name(), sizeof(File_Name[fileCount])); 
-      if (strcmp(directory, "/") == 0) {                                      
-        snprintf(filePath, 100, "%s%s", directory, file.name());   
-      } else {                                                            
+      strncpy(File_Name[fileCount], file.name(), sizeof(File_Name[fileCount]));
+      if (strcmp(directory, "/") == 0) {
+        snprintf(filePath, 100, "%s%s", directory, file.name());
+      } else {
         snprintf(filePath, 100, "%s/%s", directory, file.name());
       }
       printf("File found: %s\r\n", filePath);
       fileCount++;
     }
-    file = Path.openNextFile();                                      
+    file = Path.openNextFile();
   }
-  Path.close();                                                         
+  Path.close();
   if (fileCount > 0) {
     printf("Retrieved %d mp3 files\r\n",fileCount);
-    return fileCount;                                                 
+    return fileCount;
   } else {
     printf("No files with extension '%s' found in directory: %s\r\n", fileExtension, directory);
-    return 0;                                                         
+    return 0;
   }
 }
 

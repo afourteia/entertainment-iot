@@ -1,61 +1,18 @@
 {
   "folders": [
-    { "name": "entertainment-iot", "path": "." },
-    { "name": "billiard-parent", "path": "billiard-parent" },
-    { "name": "billiard-child", "path": "billiard-child" },
-    { "name": "cinema-door", "path": "cinema-door" }
-  ],
-  "extensions": {
-    "recommendations": ["platformio.platformio-ide"]
-  },
-  "tasks": {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "PIO: Build billiard-parent",
-        "type": "shell",
-        "command": "/home/afourteia/.platformio/penv/bin/pio",
-        "args": ["run", "-d", "${workspaceFolder:billiard-parent}"],
-        "group": "build",
-        "problemMatcher": ["$gcc"]
-      },
-      {
-        "label": "PIO: Upload billiard-parent",
-        "type": "shell",
-        "command": "/home/afourteia/.platformio/penv/bin/pio",
-        "args": ["run", "-d", "${workspaceFolder:billiard-parent}", "--target", "upload"],
-        "problemMatcher": ["$gcc"]
-      },
-      {
-        "label": "PIO: Build billiard-child",
-        "type": "shell",
-        "command": "/home/afourteia/.platformio/penv/bin/pio",
-        "args": ["run", "-d", "${workspaceFolder:billiard-child}"],
-        "group": "build",
-        "problemMatcher": ["$gcc"]
-      },
-      {
-        "label": "PIO: Upload billiard-child",
-        "type": "shell",
-        "command": "/home/afourteia/.platformio/penv/bin/pio",
-        "args": ["run", "-d", "${workspaceFolder:billiard-child}", "--target", "upload"],
-        "problemMatcher": ["$gcc"]
-      },
-      {
-        "label": "PIO: Build cinema-door",
-        "type": "shell",
-        "command": "/home/afourteia/.platformio/penv/bin/pio",
-        "args": ["run", "-d", "${workspaceFolder:cinema-door}"],
-        "group": "build",
-        "problemMatcher": ["$gcc"]
-      },
-      {
-        "label": "PIO: Upload cinema-door",
-        "type": "shell",
-        "command": "/home/afourteia/.platformio/penv/bin/pio",
-        "args": ["run", "-d", "${workspaceFolder:cinema-door}", "--target", "upload"],
-        "problemMatcher": ["$gcc"]
-      }
-    ]
+	{
+		"path": "."
+	},
+	{
+		"name": "billiard-parent",
+		"path": "billiard-parent"
+	},
+	{
+		"name": "cinema-door",
+		"path": "cinema-door"
+	}
+],
+  "settings": {
+    "files.eol": "\n"
   }
 }

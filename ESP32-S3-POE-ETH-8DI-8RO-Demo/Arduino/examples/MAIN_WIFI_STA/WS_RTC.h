@@ -14,8 +14,8 @@ typedef enum {
 } Repetition_event;
 
 typedef struct {
-  bool Enable_Flag = false;                                   // The timer event enabled flag.    
-  uint8_t Event_Number = 0;                                   // Current event sequence number   
+  bool Enable_Flag = false;                                   // The timer event enabled flag.
+  uint8_t Event_Number = 0;                                   // Current event sequence number
   Status_adjustment Relay_CH1 = STATE_Retain;                       // The CH1 status is changed periodically
   Status_adjustment Relay_CH2 = STATE_Retain;                       // The CH2 status is changed periodically
   Status_adjustment Relay_CH3 = STATE_Retain;                       // The CH3 status is changed periodically

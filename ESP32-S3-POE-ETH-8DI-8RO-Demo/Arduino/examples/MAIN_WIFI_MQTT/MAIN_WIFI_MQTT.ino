@@ -13,8 +13,8 @@
 uint32_t Simulated_time=0;      // Analog time counting
 
 /********************************************************  Initializing  ********************************************************/
-void setup() { 
-  Flash_test(); 
+void setup() {
+  Flash_test();
   GPIO_Init();  // RGB . Buzzer GPIO
   I2C_Init();
   RTC_Init();// RTC
@@ -23,7 +23,7 @@ void setup() {
   MQTT_Init();// MQTT
   Bluetooth_Init();// Bluetooth
   ETH_Init();
-  
+
   DIN_Init();                 // If you don't want to control the relay through DIN, change Relay_Immediate_Default to 0 in WS_DIN.h and re-burn the program
   Relay_Init();
 

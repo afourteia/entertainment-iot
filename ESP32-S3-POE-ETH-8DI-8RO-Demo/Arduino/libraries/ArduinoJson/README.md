@@ -7,7 +7,7 @@
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/bblanchon/ArduinoJson/ci.yml?branch=7.x&logo=github)](https://github.com/bblanchon/ArduinoJson/actions?query=workflow%3A%22Continuous+Integration%22+branch%3A7.x)
 [![Continuous Integration](https://ci.appveyor.com/api/projects/status/m7s53wav1l0abssg/branch/7.x?svg=true)](https://ci.appveyor.com/project/bblanchon/arduinojson/branch/7.x)
 [![Fuzzing Status](https://oss-fuzz-build-logs.storage.googleapis.com/badges/arduinojson.svg)](https://bugs.chromium.org/p/oss-fuzz/issues/list?sort=-opened&can=1&q=proj:arduinojson)
-[![Coveralls branch](https://img.shields.io/coveralls/github/bblanchon/ArduinoJson/7.x?logo=coveralls)](https://coveralls.io/github/bblanchon/ArduinoJson?branch=7.x)  
+[![Coveralls branch](https://img.shields.io/coveralls/github/bblanchon/ArduinoJson/7.x?logo=coveralls)](https://coveralls.io/github/bblanchon/ArduinoJson?branch=7.x)
 [![GitHub stars](https://img.shields.io/github/stars/bblanchon/ArduinoJson?style=flat&logo=github&color=orange)](https://github.com/bblanchon/ArduinoJson/stargazers)
 [![GitHub Sponsors](https://img.shields.io/github/sponsors/bblanchon?logo=github&color=orange)](https://github.com/sponsors/bblanchon)
 

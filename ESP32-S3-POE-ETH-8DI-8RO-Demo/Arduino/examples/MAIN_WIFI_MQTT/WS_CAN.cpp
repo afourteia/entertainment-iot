@@ -38,13 +38,13 @@ void CAN_Init(void)
   driver_installed = true;
 
   xTaskCreatePinnedToCore(
-    CANTask,    
-    "CANTask",   
-    4096,                
-    NULL,                 
-    3,                   
-    NULL,                 
-    0                   
+    CANTask,
+    "CANTask",
+    4096,
+    NULL,
+    3,
+    NULL,
+    0
   );
 }
 

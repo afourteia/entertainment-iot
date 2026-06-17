@@ -3,7 +3,7 @@
 #include "stdio.h"
 #include <stdint.h>
 #include <WiFi.h>
-#include <WebServer.h> 
+#include <WebServer.h>
 #include <WiFiClient.h>
 #include <WiFiAP.h>
 #include "WS_GPIO.h"
@@ -12,7 +12,7 @@
 #include "WS_RTC.h"
 
 extern char ipStr[16];
-extern bool WIFI_Connection;     
+extern bool WIFI_Connection;
 
 void handleRoot();
 void handleGetData();

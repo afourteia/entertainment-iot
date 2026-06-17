@@ -41,7 +41,7 @@
 #define RTC_CTRL_2_AIE      (0X80) //alarm interrupt 0-disalbe 1-enable
 #define RTC_CTRL_2_AF       (0X40) //alarm flag  0-inactive/cleared 1-active/unchanged
 #define RTC_CTRL_2_MI       (0X20) //minute interrupt 0-disalbe 1-enable
-#define RTC_CTRL_2_HMI      (0X10) //half minute interrupt 
+#define RTC_CTRL_2_HMI      (0X10) //half minute interrupt
 #define RTC_CTRL_2_TF       (0X08)
 
 //
@@ -52,7 +52,7 @@
 #define RTC_TIMER_MODE_TIE  (0X02) //timer interrupt enable 0-disalbe 1-enable
 #define RTC_TIMER_MODE_TI_TP    (0X01) //timer interrupt mode 0-interrupt follows timer flag 1-interrupt generates a pulse
 
-// format 
+// format
 #define RTC_ALARM 			    (0x80)	// set AEN_x registers
 #define RTC_CTRL_1_DEFAULT	(0x00)
 #define RTC_CTRL_2_DEFAULT	(0x00)

@@ -5,8 +5,8 @@
 #include "SD_MMC.h"
 
 #define SD_CLK_PIN      48
-#define SD_CMD_PIN      47 
-#define SD_D0_PIN       45 
+#define SD_CMD_PIN      47
+#define SD_D0_PIN       45
 
 extern uint16_t SDCard_Size;
 extern uint16_t Flash_Size;

@@ -1,12 +1,12 @@
 #include "WS_WIFI.h"
 
 // The name and password of the WiFi access point
-const char *ssid = STASSID;                
-const char *password = STAPSK;               
+const char *ssid = STASSID;
+const char *password = STAPSK;
 
 char ipStr[16];
-WebServer server(80);         
-bool WIFI_Connection = 0;                      
+WebServer server(80);
+bool WIFI_Connection = 0;
 
 void handleRoot() {
   String myhtmlPage =
@@ -43,7 +43,7 @@ void handleRoot() {
     "            margin-bottom: 10px;" +
     "        }" +
     "        .input-container label {" +
-    "            width: 80px;" + 
+    "            width: 80px;" +
     "            margin-right: 10px;" +
     "        }" +
     "        .input-container input[type=\"text\"] {" +
@@ -51,7 +51,7 @@ void handleRoot() {
     "            padding: 5px;" +
     "            border: 1px solid #ccc;" +
     "            border-radius: 3px;" +
-    "            margin-right: 10px; "+ 
+    "            margin-right: 10px; "+
     "        }" +
     "        .input-container button {" +
     "            padding: 5px 10px;" +
@@ -95,16 +95,16 @@ void handleRoot() {
     "            font-weight: bold;" +
     "            border-radius: 5px;" +
     "        }" +
-    "        nav a.relayControlActive {" + 
-    "            background-color: #fff;" +   
+    "        nav a.relayControlActive {" +
+    "            background-color: #fff;" +
     "            color: #333;" +
     "            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);" +
     "            transform: translateY(-4px);" +
     "            transition: all 0.2s ease-in-out;" +
-    "        }" + 
-    "        nav a.rtcEventActive {" + 
+    "        }" +
+    "        nav a.rtcEventActive {" +
     "            background-color: #555;" +
-    "        }" + 
+    "        }" +
     "    </style>" +
     "</head>"+
     "<body>"+
@@ -163,15 +163,15 @@ void handleRoot() {
     "        function resetErrorTextBox() {"+
     "          document.getElementById(\'errorTextbox\').value = \'\';"+
     "        }"+
-    "        var refreshInterval = 200;"+                                     
-    "        setInterval(updateData, refreshInterval);"+       
+    "        var refreshInterval = 200;"+
+    "        setInterval(updateData, refreshInterval);"+
     "    </script>" +
     "    <div class=\"header\">"+
     "        <h1>ESP32-S3-POE-ETH-8DI-8RO</h1>"+
     "    </div>"+
     "    <nav>" +
-    "        <a href=\"/\" id=\"relayControlLink\" class=\"relayControlActive\">Relay Control</a>" +  
-    "        <a href=\"/RTC_Event\" id=\"rtcEventLink\" class=\"rtcEventActive\">RTC Event</a>" + 
+    "        <a href=\"/\" id=\"relayControlLink\" class=\"relayControlActive\">Relay Control</a>" +
+    "        <a href=\"/RTC_Event\" id=\"rtcEventLink\" class=\"rtcEventActive\">RTC Event</a>" +
     "    </nav>" +
     "    <div class=\"container\">"+
     "        <div class=\"input-container\" style=\"margin-left: 140px;\">"+
@@ -218,84 +218,84 @@ void handleRoot() {
     "            <button value=\"AllOn\" id=\"btn9\" disabled onclick=\"ledSwitch(9)\">All On</button>"+
     "            <button value=\"AllOff\" id=\"btn0\" disabled onclick=\"ledSwitch(0)\">All Off</button>"+
     "        </div>"+
-    "        <div id=\"errorTextbox\" style=\"display: none;\"> "+     
-    "            <p>English:Please refresh the page</p>"+      
+    "        <div id=\"errorTextbox\" style=\"display: none;\"> "+
+    "            <p>English:Please refresh the page</p>"+
     "            <p>Chinese:请刷新页面</p>"+
     "        </div>"+
     "    </div>"+
     "</body>"+
     "</html>";
-    
-  server.send(200, "text/html", myhtmlPage); 
+
+  server.send(200, "text/html", myhtmlPage);
   printf("The user visited the home page\r\n");
-  
+
 }
-void handleRTCPage() {      
-    String rtcPage = String("") + 
-    "<html>" + 
-    "<head>" + 
-    "    <meta charset=\"utf-8\">" + 
-    "    <title>ESP32-S3-POE-ETH-8DI-8RO</title>" + 
-    "    <style>" + 
-    "        body {" + 
-    "            font-family: Arial, sans-serif;" + 
-    "            background-color: #f0f0f0;" + 
-    "            margin: 0;" + 
-    "            padding: 0;" + 
-    "        }" + 
-    "        .header {" + 
-    "            text-align: center;" + 
-    "            padding: 20px 0;" + 
-    "            background-color: #333;" + 
-    "            color: #fff;" + 
-    "            margin-bottom: 20px;" + 
-    "        }" + 
-    "        .container {" + 
-    "            max-width: 600px;" + 
-    "            margin: 10px auto;" + 
-    "            padding: 20px;" + 
-    "            background-color: #fff;" + 
-    "            border-radius: 5px;" + 
-    "            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);" + 
-    "        }" + 
-    "        .form-group {" + 
-    "            margin-bottom: 15px;" + 
-    "        }" + 
-    "        .form-group label {" + 
-    "            display: block;" + 
-    "            font-weight: bold;" + 
-    "        }" + 
-    "        .form-group input {" + 
-    "            width: 80px;" + 
-    "            height: 25px;" + 
-    "            padding: 4px;" + 
-    "            margin-top: 5px;" + 
-    "            border: 1px solid #ddd;" + 
-    "            border-radius: 4px;" + 
-    "            box-sizing: border-box;" + 
-    "            text-align: right; " + 
-    "        }" + 
-    "        .form-group select {" + 
-    "            width: 80px;" + 
-    "            height: 25px;" + 
-    "            padding: 4px;" + 
-    "            margin-top: 5px;" + 
-    "            border: 1px solid #ddd;" + 
-    "            border-radius: 4px;" + 
-    "            box-sizing: border-box;" + 
-    "            text-align: right; " + 
-    "        }" + 
-    "        .form-group .btn {" + 
-    "            padding: 10px 20px;" + 
-    "            background-color: #333;" + 
-    "            color: white;" + 
-    "            border: none;" + 
-    "            border-radius: 5px;" + 
-    "            cursor: pointer;" + 
-    "        }" + 
-    "        .form-group .btn:hover {" + 
-    "            background-color: #555;" + 
-    "        }" + 
+void handleRTCPage() {
+    String rtcPage = String("") +
+    "<html>" +
+    "<head>" +
+    "    <meta charset=\"utf-8\">" +
+    "    <title>ESP32-S3-POE-ETH-8DI-8RO</title>" +
+    "    <style>" +
+    "        body {" +
+    "            font-family: Arial, sans-serif;" +
+    "            background-color: #f0f0f0;" +
+    "            margin: 0;" +
+    "            padding: 0;" +
+    "        }" +
+    "        .header {" +
+    "            text-align: center;" +
+    "            padding: 20px 0;" +
+    "            background-color: #333;" +
+    "            color: #fff;" +
+    "            margin-bottom: 20px;" +
+    "        }" +
+    "        .container {" +
+    "            max-width: 600px;" +
+    "            margin: 10px auto;" +
+    "            padding: 20px;" +
+    "            background-color: #fff;" +
+    "            border-radius: 5px;" +
+    "            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);" +
+    "        }" +
+    "        .form-group {" +
+    "            margin-bottom: 15px;" +
+    "        }" +
+    "        .form-group label {" +
+    "            display: block;" +
+    "            font-weight: bold;" +
+    "        }" +
+    "        .form-group input {" +
+    "            width: 80px;" +
+    "            height: 25px;" +
+    "            padding: 4px;" +
+    "            margin-top: 5px;" +
+    "            border: 1px solid #ddd;" +
+    "            border-radius: 4px;" +
+    "            box-sizing: border-box;" +
+    "            text-align: right; " +
+    "        }" +
+    "        .form-group select {" +
+    "            width: 80px;" +
+    "            height: 25px;" +
+    "            padding: 4px;" +
+    "            margin-top: 5px;" +
+    "            border: 1px solid #ddd;" +
+    "            border-radius: 4px;" +
+    "            box-sizing: border-box;" +
+    "            text-align: right; " +
+    "        }" +
+    "        .form-group .btn {" +
+    "            padding: 10px 20px;" +
+    "            background-color: #333;" +
+    "            color: white;" +
+    "            border: none;" +
+    "            border-radius: 5px;" +
+    "            cursor: pointer;" +
+    "        }" +
+    "        .form-group .btn:hover {" +
+    "            background-color: #555;" +
+    "        }" +
     "        .Events{"+
     "            font-size: 13px;"+
     "            word-wrap: break-word;"+
@@ -305,36 +305,36 @@ void handleRTCPage() {
     "            padding: 2px;"+
     "        }"+
     "        .Events button {"+
-    "            float: right;" + 
-    "            margin-left: 1px;" + 
+    "            float: right;" +
+    "            margin-left: 1px;" +
     "        }"+
     "        .Events li {"+
-    "            font-size: 13px;" + 
+    "            font-size: 13px;" +
     "        }"+
-    "        nav {" + 
-    "            margin: 15px 0;" + 
-    "            text-align: center;" + 
-    "        }" + 
-    "        nav a {" + 
-    "            padding: 10px 50px;" + 
-    "            background-color: #333;" + 
-    "            color: white;" + 
-    "            text-decoration: none;" + 
-    "            font-weight: bold;" + 
-    "            border-radius: 5px;" + 
-    "        }" + 
-    "        nav a.relayControlActive {" + 
-    "            background-color: #555;" + 
-    "        }" + 
-    "        nav a.rtcEventActive {" + 
-    "            background-color: #fff;" + 
-    "            color: #333;" + 
-    "            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);" + 
-    "            transform: translateY(-4px);" + 
-    "            transition: all 0.2s ease-in-out;" + 
-    "        }" + 
-    "    </style>" + 
-    "</head>" + 
+    "        nav {" +
+    "            margin: 15px 0;" +
+    "            text-align: center;" +
+    "        }" +
+    "        nav a {" +
+    "            padding: 10px 50px;" +
+    "            background-color: #333;" +
+    "            color: white;" +
+    "            text-decoration: none;" +
+    "            font-weight: bold;" +
+    "            border-radius: 5px;" +
+    "        }" +
+    "        nav a.relayControlActive {" +
+    "            background-color: #555;" +
+    "        }" +
+    "        nav a.rtcEventActive {" +
+    "            background-color: #fff;" +
+    "            color: #333;" +
+    "            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.1);" +
+    "            transform: translateY(-4px);" +
+    "            transition: all 0.2s ease-in-out;" +
+    "        }" +
+    "    </style>" +
+    "</head>" +
     "<body>" +
     "    <script defer=\"defer\">" +
     "        function getRtcEventData() {" +
@@ -355,18 +355,18 @@ void handleRTCPage() {
     "            var relayCH8 = document.getElementById('RelayCH8').value;" +
     "            var cycleBox = document.getElementById('CycleBox').value;" +
     "            var WebData = " +
-    "                'Date: ' + dateBox1 + '/' + dateBox2 + '/' + dateBox3 + '  ' + '\\n' + " + 
-    "                'Week: ' + week + '  ' + '\\n' + " + 
-    "                'Time: ' + timeBox1 + ':' + timeBox2 + ':' + timeBox3 +  '  ' + '\\n' + " + 
-    "                'Relay CH1: ' + relayCH1 + '  ' + '\\n' + " + 
-    "                'Relay CH2: ' + relayCH2 + '  ' + '\\n' + " + 
-    "                'Relay CH3: ' + relayCH3 + '  ' + '\\n' + " + 
-    "                'Relay CH4: ' + relayCH4 + '  ' + '\\n' + " + 
-    "                'Relay CH5: ' + relayCH5 + '  ' + '\\n' + " + 
-    "                'Relay CH6: ' + relayCH6 + '  ' + '\\n' + " + 
-    "                'Relay CH7: ' + relayCH7 + '  ' + '\\n' + " + 
-    "                'Relay CH8: ' + relayCH8 + '  ' + '\\n' + " + 
-    "                'Cycle: ' + cycleBox + '  ' + '\\n' ;" + 
+    "                'Date: ' + dateBox1 + '/' + dateBox2 + '/' + dateBox3 + '  ' + '\\n' + " +
+    "                'Week: ' + week + '  ' + '\\n' + " +
+    "                'Time: ' + timeBox1 + ':' + timeBox2 + ':' + timeBox3 +  '  ' + '\\n' + " +
+    "                'Relay CH1: ' + relayCH1 + '  ' + '\\n' + " +
+    "                'Relay CH2: ' + relayCH2 + '  ' + '\\n' + " +
+    "                'Relay CH3: ' + relayCH3 + '  ' + '\\n' + " +
+    "                'Relay CH4: ' + relayCH4 + '  ' + '\\n' + " +
+    "                'Relay CH5: ' + relayCH5 + '  ' + '\\n' + " +
+    "                'Relay CH6: ' + relayCH6 + '  ' + '\\n' + " +
+    "                'Relay CH7: ' + relayCH7 + '  ' + '\\n' + " +
+    "                'Relay CH8: ' + relayCH8 + '  ' + '\\n' + " +
+    "                'Cycle: ' + cycleBox + '  ' + '\\n' ;" +
     "            var xhr = new XMLHttpRequest();" +
     "            xhr.open('GET', '/NewEvent?data=' + WebData, true);" +
     "            xhr.send();" +
@@ -417,115 +417,115 @@ void handleRTCPage() {
     // "                console.error(\'Error fetching time and events:\', error);"+
     // "            });"+
     "        }"+
-    "        var refreshInterval = 400;"+                                     
-    "        setInterval(upTime, refreshInterval);"+         
+    "        var refreshInterval = 400;"+
+    "        setInterval(upTime, refreshInterval);"+
     "    </script>" +
     "    <div class=\"header\">"+
-    "        <h1>ESP32-S3-POE-ETH-8DI-8RO</h1>" + 
-    "    </div>" + 
-    "    <nav>" + 
-    "        <a href=\"/\" id=\"relayControlLink\" class=\"relayControlActive\">Relay Control</a>" +  
-    "        <a href=\"/RTC_Event\" id=\"rtcEventLink\" class=\"rtcEventActive\">RTC Event</a>" +  
-    "    </nav>" + 
-    "    <div class=\"container\">" +  
-    "        <div class=\"form-group\">" + 
-    "            <label for=\"Date\">Date:(example:2024/12/20)</label>" + 
-    "            <input type=\"text\" id=\"DateBox1\" style=\"width: 50px;\" value=\"2024\">" + 
-    "            <span>/</span>" + 
-    "            <input type=\"text\" id=\"DateBox2\" style=\"width: 50px;\" value=\"12\">" + 
-    "            <span>/</span>" + 
-    "            <input type=\"text\" id=\"DateBox3\" style=\"width: 50px;\" value=\"20\">" + 
-    "            <span>&nbsp;&nbsp;&nbsp;</span>" + 
-    "            <select id=\"Week\" style=\"width: 150px;\">" + 
-    "                <option value=\"1\">星期一(Monday)</option>" + 
-    "                <option value=\"2\">星期二(Tuesday)</option>" + 
-    "                <option value=\"3\">星期三(Wednesday)</option>" + 
-    "                <option value=\"4\">星期四(Thursday)</option>" + 
-    "                <option value=\"5\">星期五(Friday)</option>" + 
-    "                <option value=\"6\">星期六(Saturday)</option>" + 
-    "                <option value=\"0\">星期日(Sunday)</option>" + 
-    "            </select>" + 
-    "        </div>" + 
-    "        <div class=\"form-group\">" + 
-    "            <label for=\"Time\">Time:(example:16:51:21)</label>" + 
-    "            <input type=\"text\" id=\"TimeBox1\" style=\"width: 50px;\" value=\"0\">" + 
-    "            <span>:</span>" + 
-    "            <input type=\"text\" id=\"TimeBox2\" style=\"width: 50px;\" value=\"0\">" + 
-    "            <span>:</span>" + 
-    "            <input type=\"text\" id=\"TimeBox3\" style=\"width: 50px;\" value=\"0\">" + 
-    "        </div>" + 
-    "        <div class=\"form-group\">" + 
+    "        <h1>ESP32-S3-POE-ETH-8DI-8RO</h1>" +
+    "    </div>" +
+    "    <nav>" +
+    "        <a href=\"/\" id=\"relayControlLink\" class=\"relayControlActive\">Relay Control</a>" +
+    "        <a href=\"/RTC_Event\" id=\"rtcEventLink\" class=\"rtcEventActive\">RTC Event</a>" +
+    "    </nav>" +
+    "    <div class=\"container\">" +
+    "        <div class=\"form-group\">" +
+    "            <label for=\"Date\">Date:(example:2024/12/20)</label>" +
+    "            <input type=\"text\" id=\"DateBox1\" style=\"width: 50px;\" value=\"2024\">" +
+    "            <span>/</span>" +
+    "            <input type=\"text\" id=\"DateBox2\" style=\"width: 50px;\" value=\"12\">" +
+    "            <span>/</span>" +
+    "            <input type=\"text\" id=\"DateBox3\" style=\"width: 50px;\" value=\"20\">" +
+    "            <span>&nbsp;&nbsp;&nbsp;</span>" +
+    "            <select id=\"Week\" style=\"width: 150px;\">" +
+    "                <option value=\"1\">星期一(Monday)</option>" +
+    "                <option value=\"2\">星期二(Tuesday)</option>" +
+    "                <option value=\"3\">星期三(Wednesday)</option>" +
+    "                <option value=\"4\">星期四(Thursday)</option>" +
+    "                <option value=\"5\">星期五(Friday)</option>" +
+    "                <option value=\"6\">星期六(Saturday)</option>" +
+    "                <option value=\"0\">星期日(Sunday)</option>" +
+    "            </select>" +
+    "        </div>" +
+    "        <div class=\"form-group\">" +
+    "            <label for=\"Time\">Time:(example:16:51:21)</label>" +
+    "            <input type=\"text\" id=\"TimeBox1\" style=\"width: 50px;\" value=\"0\">" +
+    "            <span>:</span>" +
+    "            <input type=\"text\" id=\"TimeBox2\" style=\"width: 50px;\" value=\"0\">" +
+    "            <span>:</span>" +
+    "            <input type=\"text\" id=\"TimeBox3\" style=\"width: 50px;\" value=\"0\">" +
+    "        </div>" +
+    "        <div class=\"form-group\">" +
     "            <label for=\"relayBox\">Relay:</label>" +
-    "            <span>CH1~CH4: </span>" + 
-    "            <select id=\"RelayCH1\" style=\"width: 100px;\">" + 
-    "                <option value=\"2\">保留(Retain)</option>" + 
-    "                <option value=\"0\">关闭(close)</option>" + 
-    "                <option value=\"1\">打开(Open)</option>" + 
-    "            </select>" + 
-    "            <select id=\"RelayCH2\" style=\"width: 100px;\">" + 
-    "                <option value=\"2\">保留(Retain)</option>" + 
-    "                <option value=\"0\">关闭(close)</option>" + 
-    "                <option value=\"1\">打开(Open)</option>" + 
-    "            </select>" + 
-    "            <select id=\"RelayCH3\" style=\"width: 100px;\">" + 
-    "                <option value=\"2\">保留(Retain)</option>" + 
-    "                <option value=\"0\">关闭(close)</option>" + 
-    "                <option value=\"1\">打开(Open)</option>" + 
-    "            </select>" + 
-    "            <select id=\"RelayCH4\" style=\"width: 100px;\">" + 
-    "                <option value=\"2\">保留(Retain)</option>" + 
-    "                <option value=\"0\">关闭(close)</option>" + 
-    "                <option value=\"1\">打开(Open)</option>" + 
-    "            </select>" + 
-    "            <span><br>CH5~CH8: </span>" + 
-    "            <select id=\"RelayCH5\" style=\"width: 100px;\">" + 
-    "                <option value=\"2\">保留(Retain)</option>" + 
-    "                <option value=\"0\">关闭(close)</option>" + 
-    "                <option value=\"1\">打开(Open)</option>" + 
-    "            </select>" + 
-    "            <select id=\"RelayCH6\" style=\"width: 100px;\">" + 
-    "                <option value=\"2\">保留(Retain)</option>" + 
-    "                <option value=\"0\">关闭(close)</option>" + 
-    "                <option value=\"1\">打开(Open)</option>" + 
-    "            </select>" + 
-    "            <select id=\"RelayCH7\" style=\"width: 100px;\">" + 
-    "                <option value=\"2\">保留(Retain)</option>" + 
-    "                <option value=\"0\">关闭(close)</option>" + 
-    "                <option value=\"1\">打开(Open)</option>" + 
-    "            </select>" + 
-    "            <select id=\"RelayCH8\" style=\"width: 100px;\">" + 
-    "                <option value=\"2\">保留(Retain)</option>" + 
-    "                <option value=\"0\">关闭(close)</option>" + 
-    "                <option value=\"1\">打开(Open)</option>" + 
-    "            </select>" + 
-    "        </div>" + 
-    "        <div class=\"form-group\">" + 
-    "            <label for=\"cycleBox\">Cycle:</label>" + 
-    "            <select id=\"CycleBox\" style=\"width: 150px;\">" + 
-    "                <option value=\"0\">无重复(Aperiodicity)</option>" + 
-    "                <option value=\"1\">每天(everyday)</option>" + 
-    "                <option value=\"2\">每周(Weekly)</option>" + 
-    "                <option value=\"3\">每月(monthly)</option>" + 
-    "            </select>" + 
-    "        </div>" + 
-    "        <div class=\"form-group\">" + 
-    "            <button class=\"btn\" id=\"NewEvent\" onclick=\"getRtcEventData()\">New Event</button>" + 
-    "        </div>" + 
-    "    </div>" + 
-    "    <div class=\"container\">" +  
-    "        <div class=\"form-group\">" + 
+    "            <span>CH1~CH4: </span>" +
+    "            <select id=\"RelayCH1\" style=\"width: 100px;\">" +
+    "                <option value=\"2\">保留(Retain)</option>" +
+    "                <option value=\"0\">关闭(close)</option>" +
+    "                <option value=\"1\">打开(Open)</option>" +
+    "            </select>" +
+    "            <select id=\"RelayCH2\" style=\"width: 100px;\">" +
+    "                <option value=\"2\">保留(Retain)</option>" +
+    "                <option value=\"0\">关闭(close)</option>" +
+    "                <option value=\"1\">打开(Open)</option>" +
+    "            </select>" +
+    "            <select id=\"RelayCH3\" style=\"width: 100px;\">" +
+    "                <option value=\"2\">保留(Retain)</option>" +
+    "                <option value=\"0\">关闭(close)</option>" +
+    "                <option value=\"1\">打开(Open)</option>" +
+    "            </select>" +
+    "            <select id=\"RelayCH4\" style=\"width: 100px;\">" +
+    "                <option value=\"2\">保留(Retain)</option>" +
+    "                <option value=\"0\">关闭(close)</option>" +
+    "                <option value=\"1\">打开(Open)</option>" +
+    "            </select>" +
+    "            <span><br>CH5~CH8: </span>" +
+    "            <select id=\"RelayCH5\" style=\"width: 100px;\">" +
+    "                <option value=\"2\">保留(Retain)</option>" +
+    "                <option value=\"0\">关闭(close)</option>" +
+    "                <option value=\"1\">打开(Open)</option>" +
+    "            </select>" +
+    "            <select id=\"RelayCH6\" style=\"width: 100px;\">" +
+    "                <option value=\"2\">保留(Retain)</option>" +
+    "                <option value=\"0\">关闭(close)</option>" +
+    "                <option value=\"1\">打开(Open)</option>" +
+    "            </select>" +
+    "            <select id=\"RelayCH7\" style=\"width: 100px;\">" +
+    "                <option value=\"2\">保留(Retain)</option>" +
+    "                <option value=\"0\">关闭(close)</option>" +
+    "                <option value=\"1\">打开(Open)</option>" +
+    "            </select>" +
+    "            <select id=\"RelayCH8\" style=\"width: 100px;\">" +
+    "                <option value=\"2\">保留(Retain)</option>" +
+    "                <option value=\"0\">关闭(close)</option>" +
+    "                <option value=\"1\">打开(Open)</option>" +
+    "            </select>" +
+    "        </div>" +
+    "        <div class=\"form-group\">" +
+    "            <label for=\"cycleBox\">Cycle:</label>" +
+    "            <select id=\"CycleBox\" style=\"width: 150px;\">" +
+    "                <option value=\"0\">无重复(Aperiodicity)</option>" +
+    "                <option value=\"1\">每天(everyday)</option>" +
+    "                <option value=\"2\">每周(Weekly)</option>" +
+    "                <option value=\"3\">每月(monthly)</option>" +
+    "            </select>" +
+    "        </div>" +
+    "        <div class=\"form-group\">" +
+    "            <button class=\"btn\" id=\"NewEvent\" onclick=\"getRtcEventData()\">New Event</button>" +
+    "        </div>" +
+    "    </div>" +
+    "    <div class=\"container\">" +
+    "        <div class=\"form-group\">" +
     "            <span id=\"Time\"></span> "+
-    "        </div>" + 
-    "        <div class=\"Events\">" + 
+    "        </div>" +
+    "        <div class=\"Events\">" +
     "            <ul id=\"myList\"> "+
     "            </ul> "+
-    "        </div>" + 
-    "    </div>" + 
-    "</body>" + 
-    "</html>"; 
+    "        </div>" +
+    "    </div>" +
+    "</body>" +
+    "</html>";
 
-    server.send(200, "text/html", rtcPage);   
-    printf("The user visited the RTC Event page\r\n"); 
+    server.send(200, "text/html", rtcPage);
+    printf("The user visited the RTC Event page\r\n");
 }
 
 
@@ -598,7 +598,7 @@ void handleUpTimeAndEvent() {
 
   // Create a JSON response
   String jsonResponse = "{";
-  
+
   jsonResponse += "\"time\":\"" + String(datetime_str) + "\",";
   for (int i = 0; i < eventCount; i++) {
     jsonResponse += "\"eventStr" + String(i + 1) + "\":\"" + String(Event_str[i]) + "\",";
@@ -625,32 +625,32 @@ void handleDeleteEvent() {
 void WIFI_Init()
 {
   xTaskCreatePinnedToCore(
-    WifiStaTask,    
-    "WifiStaTask",   
-    4096,                
-    NULL,                 
-    3,                   
-    NULL,                 
-    0                   
+    WifiStaTask,
+    "WifiStaTask",
+    4096,
+    NULL,
+    3,
+    NULL,
+    0
   );
 }
 
 
 void WifiStaTask(void *parameter) {
   uint8_t Count = 0;
-  WiFi.mode(WIFI_STA);                                   
-  WiFi.setSleep(true);      
+  WiFi.mode(WIFI_STA);
+  WiFi.setSleep(true);
   WiFi.begin(ssid, password);                         // Connect to the specified Wi-Fi network
   while(1){
     if(WiFi.status() != WL_CONNECTED)
     {
       WIFI_Connection = 0;
-      printf(".\n");  
-      RGB_Open_Time(50, 0, 0, 500, 0); 
+      printf(".\n");
+      RGB_Open_Time(50, 0, 0, 500, 0);
       Count++;
       if(Count >= 10){
         Count = 0;
-        printf("\r\n"); 
+        printf("\r\n");
         WiFi.disconnect();
         vTaskDelay(pdMS_TO_TICKS(100));
         WiFi.mode(WIFI_OFF);
@@ -666,8 +666,8 @@ void WifiStaTask(void *parameter) {
       printf("IP Address: ");
       sprintf(ipStr, "%d.%d.%d.%d", myIP[0], myIP[1], myIP[2], myIP[3]);
       printf("%s\r\n", ipStr);
-      RGB_Open_Time(0, 50, 0, 1000, 0); 
-      
+      RGB_Open_Time(0, 50, 0, 1000, 0);
+
       server.on("/", handleRoot);            // Relay Control page
       server.on("/getData", handleGetData);
       server.on("/Switch1", handleSwitch1);
@@ -680,14 +680,14 @@ void WifiStaTask(void *parameter) {
       server.on("/Switch8", handleSwitch8);
       server.on("/AllOn"  , handleSwitch9);
       server.on("/AllOff" , handleSwitch0);
-      
+
       server.on("/RTC_Event", handleRTCPage);      // RTC Event page
       server.on("/NewEvent" , handleNewEvent);
       server.on("/getTimeAndEvent", handleUpTimeAndEvent);
       server.on("/DeleteEvent", handleDeleteEvent);
-      
-      server.begin(); 
-      printf("Web server started\r\n"); 
+
+      server.begin();
+      printf("Web server started\r\n");
 
       while (WiFi.status() == WL_CONNECTED){
         server.handleClient(); // Processing requests from clients
@@ -699,7 +699,7 @@ void WifiStaTask(void *parameter) {
   vTaskDelete(NULL);
 }
 // String decoding
-bool parseData(const char* Text, datetime_t* dt, Status_adjustment* Relay_n, Repetition_event* cycleEvent) {    
+bool parseData(const char* Text, datetime_t* dt, Status_adjustment* Relay_n, Repetition_event* cycleEvent) {
   int ret;
   // Parse Date: YYYY/MM/DD
   ret = sscanf(Text, "Date: %hd/%hhd/%hhd", &dt->year, &dt->month, &dt->day);

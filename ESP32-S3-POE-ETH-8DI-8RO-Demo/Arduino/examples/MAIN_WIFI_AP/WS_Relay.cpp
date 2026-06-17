@@ -67,13 +67,13 @@ void Relay_Init(void)
 {
   TCA9554PWR_Init(0x00, 0x00);
   xTaskCreatePinnedToCore(
-    RelayFailTask,    
-    "RelayFailTask",   
-    4096,                
-    NULL,                 
-    3,                   
-    NULL,                 
-    0                   
+    RelayFailTask,
+    "RelayFailTask",
+    4096,
+    NULL,
+    3,
+    NULL,
+    0
   );
 }
 
@@ -87,10 +87,10 @@ void Relay_Analysis(uint8_t *buf,uint8_t Mode_Flag)
   else if(Mode_Flag == WIFI_Mode)
     printf("WIFI Data :\r\n");
   else if(Mode_Flag == RS485_Mode)
-    printf("RS485 Data :\r\n");  
+    printf("RS485 Data :\r\n");
   switch(buf[0])
   {
-    case CH1: 
+    case CH1:
       ret = Relay_CHx_Toggle(GPIO_PIN_CH1);                                              //Toggle the level status of the GPIO_PIN_CH1 pin
       if(ret){
         Relay_Flag[0] =! Relay_Flag[0];
@@ -101,7 +101,7 @@ void Relay_Analysis(uint8_t *buf,uint8_t Mode_Flag)
           printf("|***  Relay CH1 off ***|\r\n");
       }
       break;
-    case CH2: 
+    case CH2:
       ret = Relay_CHx_Toggle(GPIO_PIN_CH2);                                             //Toggle the level status of the GPIO_PIN_CH2 pin
       if(ret){
         Relay_Flag[1] =! Relay_Flag[1];
@@ -136,7 +136,7 @@ void Relay_Analysis(uint8_t *buf,uint8_t Mode_Flag)
       break;
     case CH5:
       ret = Relay_CHx_Toggle(GPIO_PIN_CH5);                                             //Toggle the level status of the GPIO_PIN_CH5 pin
-      if(ret){  
+      if(ret){
         Relay_Flag[4] =! Relay_Flag[4];
         Buzzer_Open_Time(200, 0);
         if(Relay_Flag[4])
@@ -192,7 +192,7 @@ void Relay_Analysis(uint8_t *buf,uint8_t Mode_Flag)
       if(ret){
         memset(Relay_Flag,0, sizeof(Relay_Flag));
         printf("|***  Relay ALL off ***|\r\n");
-        Buzzer_Open_Time(500, 150); 
+        Buzzer_Open_Time(500, 150);
       }
       break;
     default:
@@ -209,10 +209,10 @@ void Relay_Immediate(uint8_t CHx, bool State, uint8_t Mode_Flag)
   else{
     uint8_t ret = 0;
     if(Mode_Flag == DIN_Mode)
-      printf("DIN Data :\r\n"); 
+      printf("DIN Data :\r\n");
     else if(Mode_Flag == RTC_Mode)
       printf("RTC Data :\r\n");
-    ret = Relay_CHx(CHx,State);                                               
+    ret = Relay_CHx(CHx,State);
     if(ret){
       Relay_Flag[CHx-1] = State;
       Buzzer_Open_Time(200, 0);
@@ -227,13 +227,13 @@ void Relay_Immediate_CHxn(Status_adjustment * Relay_n, uint8_t Mode_Flag)
 {
   uint8_t ret = 0;
   if(Mode_Flag == DIN_Mode)
-    printf("DIN Data :\r\n"); 
+    printf("DIN Data :\r\n");
   else if(Mode_Flag == RTC_Mode)
-    printf("RTC Data :\r\n");            
+    printf("RTC Data :\r\n");
   for (int i = 0; i < 8; i++) {
     if(Relay_n[i] == STATE_Open || Relay_n[i] == STATE_Closs){
       Relay_Flag[i] = (bool)Relay_n[i];
-      ret = Relay_CHx(i+1,Relay_n[i]);  
+      ret = Relay_CHx(i+1,Relay_n[i]);
       if(Relay_n[i] == STATE_Open)
         printf("|***  Relay CH%d on  ***|\r\n",i+1);
       else if(Relay_n[i] == STATE_Closs)
@@ -247,13 +247,13 @@ void Relay_Immediate_CHxs(uint8_t PinState, uint8_t Mode_Flag)
 {
   uint8_t ret = 0;
   if(Mode_Flag == DIN_Mode)
-    printf("DIN Data :\r\n"); 
+    printf("DIN Data :\r\n");
   else if(Mode_Flag == RTC_Mode)
     printf("RTC Data :\r\n");
   for (int i = 0; i < 8; i++) {
     Relay_Flag[i] = (PinState >> i) & 0x01; // 提取每一位并赋值
   }
-  ret = Relay_CHxs_PinState(PinState);                                               
+  ret = Relay_CHxs_PinState(PinState);
   if(ret){
     for (int j = 0; j < 8; j++) {
       if(Relay_Flag[j])

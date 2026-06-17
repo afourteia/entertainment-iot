@@ -33,21 +33,21 @@ void SetData(uint8_t* data, size_t length) {
   lidarSerial.write(data, length);                          // Send data from the RS485
 }
 void ReadData(uint8_t* buf, uint8_t length) {
-  uint8_t Receive_Flag = 0;       
+  uint8_t Receive_Flag = 0;
   Receive_Flag = lidarSerial.available();
   if (Receive_Flag >= length) {
-    lidarSerial.readBytes(buf, length); 
+    lidarSerial.readBytes(buf, length);
     char printBuf[length * 3 + 1];
     sprintf(printBuf, "Received data: ");
     for (int i = 0; i < length; i++) {
-      sprintf(printBuf + strlen(printBuf), "%02X ", buf[i]); 
+      sprintf(printBuf + strlen(printBuf), "%02X ", buf[i]);
     }
-    printf(printBuf); 
+    printf(printBuf);
     /*************************
     Add a receiving data handler
     *************************/
     Receive_Flag = 0;
-    memset(buf, 0, sizeof(buf));   
+    memset(buf, 0, sizeof(buf));
   }
 }
 void RS485_Analysis(uint8_t *buf)
@@ -55,43 +55,43 @@ void RS485_Analysis(uint8_t *buf)
   switch(buf[1])
   {
     case Extension_CH1:
-      SetData(Send_Data[0],sizeof(Send_Data[0])); 
+      SetData(Send_Data[0],sizeof(Send_Data[0]));
       printf("|***  Toggle expansion channel 1 ***|\r\n");
       break;
     case Extension_CH2:
-      SetData(Send_Data[1],sizeof(Send_Data[1])); 
+      SetData(Send_Data[1],sizeof(Send_Data[1]));
       printf("|***  Toggle expansion channel 2 ***|\r\n");
       break;
     case Extension_CH3:
-      SetData(Send_Data[2],sizeof(Send_Data[2])); 
+      SetData(Send_Data[2],sizeof(Send_Data[2]));
       printf("|***  Toggle expansion channel 3 ***|\r\n");
       break;
     case Extension_CH4:
-      SetData(Send_Data[3],sizeof(Send_Data[3])); 
+      SetData(Send_Data[3],sizeof(Send_Data[3]));
       printf("|***  Toggle expansion channel 4 ***|\r\n");
       break;
     case Extension_CH5:
-      SetData(Send_Data[4],sizeof(Send_Data[4])); 
+      SetData(Send_Data[4],sizeof(Send_Data[4]));
       printf("|***  Toggle expansion channel 5 ***|\r\n");
       break;
     case Extension_CH6:
-      SetData(Send_Data[5],sizeof(Send_Data[5])); 
+      SetData(Send_Data[5],sizeof(Send_Data[5]));
       printf("|***  Toggle expansion channel 6 ***|\r\n");
       break;
     case Extension_CH7:
-      SetData(Send_Data[6],sizeof(Send_Data[6])); 
+      SetData(Send_Data[6],sizeof(Send_Data[6]));
       printf("|***  Toggle expansion channel 7 ***|\r\n");
       break;
     case Extension_CH8:
-      SetData(Send_Data[7],sizeof(Send_Data[7])); 
+      SetData(Send_Data[7],sizeof(Send_Data[7]));
       printf("|***  Toggle expansion channel 8 ***|\r\n");
       break;
     case Extension_ALL_ON:
-      SetData(Send_Data[8],sizeof(Send_Data[8])); 
+      SetData(Send_Data[8],sizeof(Send_Data[8]));
       printf("|***  Enable all extension channels ***|\r\n");
       break;
     case Extension_ALL_OFF:
-      SetData(Send_Data[9],sizeof(Send_Data[9])); 
+      SetData(Send_Data[9],sizeof(Send_Data[9]));
       printf("|***  Close all expansion channels ***|\r\n");
       break;
     default:
@@ -102,19 +102,19 @@ uint32_t Baudrate = 0;
 double  transmission_time = 0;
 double RS485_cmd_Time = 0;
 void RS485_Init()                                             // Initializing serial port
-{    
-  Baudrate = 9600;                                            // Set the baud rate of the serial port                                              
+{
+  Baudrate = 9600;                                            // Set the baud rate of the serial port
   lidarSerial.begin(Baudrate, SERIAL_8N1, RXD1, TXD1);        // Initializing serial port
   transmission_time = 10.0 / Baudrate * 1000 ;
   RS485_cmd_Time = transmission_time*8;                       // 8:data length
   xTaskCreatePinnedToCore(
-    RS485Task,    
-    "RS485Task",   
-    4096,                
-    NULL,                 
-    3,                   
-    NULL,                 
-    0                   
+    RS485Task,
+    "RS485Task",
+    4096,
+    NULL,
+    3,
+    NULL,
+    0
   );
 }
 
@@ -129,12 +129,12 @@ void RS485Task(void *parameter) {
 void RS485_Loop()
 {
   uint8_t Receive_Flag = 0;       // Receiving mark
-  Receive_Flag = lidarSerial.available();    
+  Receive_Flag = lidarSerial.available();
 
   if (Receive_Flag > 0) {
     if(RS485_cmd_Time > 1)              // Time greater than 1 millisecond
       delay((uint16_t)RS485_cmd_Time);
-    else                      // Time is less than 1 millisecond 
+    else                      // Time is less than 1 millisecond
       delay(1);
     Receive_Flag = lidarSerial.available();
     lidarSerial.readBytes(buf, Receive_Flag);              // The Receive_Flag length is read
@@ -150,7 +150,7 @@ void RS485_Loop()
           Relay_Analysis(buf,RS485_Mode);
           break;
         }
-      }   
+      }
       if(i > numRows-1)
         printf("Note : Non-instruction data was received - RS485 !\r\n");
     }
